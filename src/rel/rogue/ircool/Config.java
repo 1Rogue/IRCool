@@ -4,9 +4,10 @@ package rel.rogue.ircool;
  * @author Spencer
  */
 public class Config {
+    //TO-DO convert priv variables to configuration in program
     private boolean timestamps = true;
     private java.util.ArrayList<String> defaultchannels = new java.util.ArrayList<>();
-    private String defaultnick = "Ralph";
+    private String defaultnick = "notnotRalph";
     private String username = "IRCool";
     private String network = "irc.esper.net";
     private String port = "6667";

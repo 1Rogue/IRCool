@@ -11,6 +11,9 @@ public class MainGUI extends javax.swing.JFrame {
     
     org.pircbotx.PircBotX user = IRCool.getUser();
     private static Config settings = new Config();
+    //Testing variables for multi-channel interface
+    private javax.swing.JTextArea foffArea;
+    private javax.swing.JTextArea forumArea;
 
     /**
      * Creates new form MainGUI
@@ -35,7 +38,7 @@ public class MainGUI extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jList2 = new javax.swing.JList();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        textArea = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -64,10 +67,12 @@ public class MainGUI extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(jList2);
 
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane3.setViewportView(jTextArea1);
+        textArea.setEditable(false);
+        textArea.setColumns(20);
+        textArea.setFont(new java.awt.Font("Arial Unicode MS", 0, 11)); // NOI18N
+        textArea.setLineWrap(true);
+        textArea.setRows(5);
+        jScrollPane3.setViewportView(textArea);
 
         jButton1.setText("Send");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -147,15 +152,11 @@ public class MainGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenu1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        user.sendMessage("#fofftopic", textField.getText());
-        Utils.printMsg("Ralph", textField.getText());
-        textField.setText("");
+        sendMsg();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void textFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldActionPerformed
-        user.sendMessage("#fofftopic", textField.getText());
-        Utils.printMsg("Ralph", textField.getText());
-        textField.setText("");
+        sendMsg();
     }//GEN-LAST:event_textFieldActionPerformed
 
     /**
@@ -192,6 +193,22 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
     }
+    
+    
+    private void sendMsg () {
+        String text = textField.getText();
+        if (text.startsWith("/")) {
+            Utils.print("Command recognized");
+        }
+        else {
+            user.sendMessage("#fofftopic", text);
+            Utils.printMsg(user.getNick(), text);
+        }
+        textField.setText("");
+    }
+    public static javax.swing.JTextArea getTextArea() {
+        return textArea;
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JList jList1;
@@ -204,7 +221,7 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextArea jTextArea1;
+    private static javax.swing.JTextArea textArea;
     private javax.swing.JTextField textField;
     // End of variables declaration//GEN-END:variables
 }

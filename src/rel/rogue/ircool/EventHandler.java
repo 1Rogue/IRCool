@@ -7,6 +7,14 @@ public class EventHandler extends org.pircbotx.hooks.ListenerAdapter {
     
     org.pircbotx.PircBotX user = IRCool.getUser();
     
+    
+    /**
+     * Used for parsing messages to client.
+     * Also mostly just a fun little feature for testing the client from the 
+     * other side. Will be updated upon finalizing project.
+     * 
+     * @param event 
+     */
     @Override
     public void onMessage(org.pircbotx.hooks.events.MessageEvent event) {
         String message = event.getMessage();
@@ -27,6 +35,13 @@ public class EventHandler extends org.pircbotx.hooks.ListenerAdapter {
         }
     }
     
+    
+    /**
+     * Auto-join, which needs to be made configurable. Also prints kick
+     * statements.
+     * 
+     * @param event 
+     */
     @Override
     public void onKick(org.pircbotx.hooks.events.KickEvent event) {
         if (event.getRecipient().getNick().equals(user.getNick())) {
@@ -38,10 +53,23 @@ public class EventHandler extends org.pircbotx.hooks.ListenerAdapter {
         }
     }
     
+    /**
+     * 
+     * Used for printing action statements.
+     * 
+     * @param event 
+     */
     @Override
     public void onAction(org.pircbotx.hooks.events.ActionEvent event) {
         Utils.printAction(event.getUser().getNick(), event.getMessage());
     }
+    
+    /**
+     * 
+     * Used for printing nick changes.
+     * 
+     * @param event 
+     */
     
     @Override
     public void onNickChange(org.pircbotx.hooks.events.NickChangeEvent event) {
@@ -52,8 +80,4 @@ public class EventHandler extends org.pircbotx.hooks.ListenerAdapter {
             Utils.print(event.getOldNick() + " is now known as " + event.getNewNick());
         }
     }
-    
-    /*public void onChannelJoin(ChannelJoinEvent event) {
-        
-    }*/
 }
