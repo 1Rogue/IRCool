@@ -10,22 +10,55 @@ public class Utils {
     
     private static Config settings = new Config();
     private static String time = "[" + getTime() + "] ";
-    private static MainGUI gui = new MainGUI();
     
-    public static void print (String s) {
+    public static String format (String message) {
         if (settings.enabletime()) {
-            System.out.print(time);
+            message = time + "  " + message;
         }
-        s = s + "\n";
-        System.out.println(s);
-        MainGUI.getTextArea().append(s);
+        message = message + "\n";
+        return message;
+    }
+    public static void print (String channel, String message) {
+        message = format(message);
+        System.out.print(channel + ": " + message);
+        MainGUI.write(channel, message);
+        MainGUI.getTextArea().append(message);
         MainGUI.getTextArea().setCaretPosition(MainGUI.getTextArea().getDocument().getLength());
     }
-    public static void printMsg (String sender, String message) {
-        print("<" + sender + "> " + message);
+    public static void printCurrent (String message) {
+        message = format(message);
+        System.out.print(MainGUI.getActiveChannel() + ": " + message);
+        if (MainGUI.getTextArea() != null) {
+            MainGUI.getTextArea().append(message);
+            MainGUI.getTextArea().setCaretPosition(MainGUI.getTextArea().getDocument().getLength());
+        }
+        else {
+            System.err.println("Cannot append message to Text Area!");
+        }
     }
-    public static void printAction (String sender, String action) {
-        print("* " + sender + " " + action);
+    public static void printConsole (String message) {
+        message = format(message);
+        System.out.print("Console: " + message);
+        MainGUI.write("@@console", message);
+        
+    }
+    public static void printMsg (String channel, String sender, String message) {
+        print(channel, "<" + sender + "> " + message);
+    }
+    public static void printAction (String channel, String sender, String action) {
+        print(channel, "* " + sender + " " + action);
+    }
+    public static void joinDefaultChans(String chans) {
+        String[] temp = chans.split("(, |,)");
+        for (int i=0; i<temp.length; i++) {
+            Utils.joinChan(temp[i]);
+        }
+    }
+    public static void joinChan (String chan) {
+        Utils.printCurrent("Attempting to join " + chan);
+        rel.rogue.ircool.IRCool.getUser().joinChannel(chan);
+        rel.rogue.ircool.MainGUI.addChan(chan);
+        MainGUI.updateChannelList();
     }
     
     /**
