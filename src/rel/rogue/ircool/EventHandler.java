@@ -15,7 +15,7 @@ public class EventHandler extends org.pircbotx.hooks.ListenerAdapter {
      */
     @Override
     public void onMessage(org.pircbotx.hooks.events.MessageEvent event) {
-        Utils.printMsg(event.getChannel().toString(), event.getUser().getNick(), event.getMessage());
+        Utils.printMsg(event.getChannel().getName(), event.getUser().getNick(), event.getMessage());
     }
     
     
