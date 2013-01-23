@@ -9,27 +9,13 @@ public class EventHandler extends org.pircbotx.hooks.ListenerAdapter {
     
     
     /**
-     * Used for parsing messages to client.
-     * Also mostly just a fun little feature for testing the client from the 
-     * other side. Will be updated upon finalizing project.
+     * Used for passing messages to client.
      * 
      * @param event 
      */
     @Override
     public void onMessage(org.pircbotx.hooks.events.MessageEvent event) {
-        Utils.print(event.getChannel().toString(), "<" + event.getUser().getNick() + "> " + event.getMessage());
-        if ((event.getMessage().toLowerCase().contains("toss me a") || event.getMessage().toLowerCase().contains("toss me an")) && event.getMessage().toLowerCase().contains(user.getNick().toLowerCase())) {
-            String[] f;
-            if (!event.getMessage().contains("toss me an")) {
-                f = event.getMessage().split("toss me a ");
-            }
-            else {
-                f = event.getMessage().split("toss me an ");
-            }
-            String object = f[1];
-            user.sendAction(event.getChannel(), "tosses " + event.getUser().getNick() + " " + Utils.vowel(object) + " " + object);
-            Utils.printAction(event.getChannel().toString(), user.getNick(), "tosses " + event.getUser().getNick() + " " + Utils.vowel(object) + " " + object);
-        }
+        Utils.printMsg(event.getChannel().toString(), event.getUser().getNick(), event.getMessage());
     }
     
     

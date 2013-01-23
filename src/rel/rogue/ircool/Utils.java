@@ -20,21 +20,23 @@ public class Utils {
     }
     public static void print (String channel, String message) {
         message = format(message);
-        System.out.print(channel + ": " + message);
-        MainGUI.write(channel, message);
-        MainGUI.getTextArea().append(message);
-        MainGUI.getTextArea().setCaretPosition(MainGUI.getTextArea().getDocument().getLength());
-    }
-    public static void printCurrent (String message) {
-        message = format(message);
-        System.out.print(MainGUI.getActiveChannel() + ": " + message);
-        if (MainGUI.getTextArea() != null) {
-            MainGUI.getTextArea().append(message);
-            MainGUI.getTextArea().setCaretPosition(MainGUI.getTextArea().getDocument().getLength());
+        if (!(MainGUI.getActiveChannel().equals(channel))) {
+            printBackground(channel, message);
         }
         else {
-            System.err.println("Cannot append message to Text Area!");
+            printCurrent(message);
         }
+    }
+    
+    public static void printBackground (String channel, String message) {
+        System.out.print(channel + ": " + message);
+        MainGUI.write(channel, message);
+    }
+    
+    public static void printCurrent (String message) {
+        System.out.print(MainGUI.getActiveChannel() + ": " + message);
+        MainGUI.getTextArea().append(message);
+        MainGUI.getTextArea().setCaretPosition(MainGUI.getTextArea().getDocument().getLength());
     }
     public static void printConsole (String message) {
         message = format(message);
@@ -55,35 +57,10 @@ public class Utils {
         }
     }
     public static void joinChan (String chan) {
-        Utils.printCurrent("Attempting to join " + chan);
+        Utils.printConsole("Attempting to join " + chan);
         rel.rogue.ircool.IRCool.getUser().joinChannel(chan);
         rel.rogue.ircool.MainGUI.addChan(chan);
         MainGUI.updateChannelList();
-    }
-    
-    /**
-     * 
-     * Used for temporary command in EventHandler class.
-     * 
-     * @param s
-     * @return 
-     */
-    public static String vowel (String s) {
-        if (s.startsWith("a") ||
-                s.startsWith("A") ||
-                s.startsWith("e") ||
-                s.startsWith("E") ||
-                s.startsWith("i") ||
-                s.startsWith("I") ||
-                s.startsWith("o") ||
-                s.startsWith("O") ||
-                s.startsWith("u") ||
-                s.startsWith("U")) {
-            return "an";
-        }
-        else {
-            return "a";
-        }
     }
     
     /**

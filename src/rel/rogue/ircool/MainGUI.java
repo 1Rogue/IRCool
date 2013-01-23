@@ -66,7 +66,14 @@ public class MainGUI extends javax.swing.JFrame {
                 return temp[i];
             }
         });
+        channelList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        channelList.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         channelList.setName(""); // NOI18N
+        channelList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                channelListMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(channelList);
 
         userList.setModel(new javax.swing.AbstractListModel() {
@@ -173,11 +180,17 @@ public class MainGUI extends javax.swing.JFrame {
             //textField.setText(previousTextLine());
         }
     }//GEN-LAST:event_textFieldKeyPressed
-                     //TO-DO Add to selection event.
-        /*channels.put(activeChan, getTextArea().getText());
-        activeChan = channelList.getSelectedValue().toString();
-        getTextArea().append(channels.get(activeChan));
-        getTextArea().setCaretPosition(MainGUI.getTextArea().getDocument().getLength());*/
+
+    private void channelListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_channelListMouseClicked
+        if (!(channelList.getSelectedValue().toString().equals(activeChan))) {
+            channels.put(activeChan, getTextArea().getText());
+            activeChan = channelList.getSelectedValue().toString();
+            getTextArea().setText("");
+            getTextArea().append(channels.get(activeChan));
+            getTextArea().setCaretPosition(MainGUI.getTextArea().getDocument().getLength());
+        }
+    }//GEN-LAST:event_channelListMouseClicked
+    
     /**
      * @param args the command line arguments
      */

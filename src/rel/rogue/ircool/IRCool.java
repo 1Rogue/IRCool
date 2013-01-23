@@ -40,9 +40,9 @@ public class IRCool {
         eventHandler = new EventHandler();
         boolean success = user.getListenerManager().addListener(eventHandler);
         if (success) {
-            Utils.printCurrent("Event System registered");
+            Utils.printConsole("Event System registered");
         } else {
-            Utils.printCurrent("Problem hooking event system");
+            Utils.printConsole("Problem hooking event system");
         }
     }
     
