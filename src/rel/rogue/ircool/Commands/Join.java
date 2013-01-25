@@ -1,6 +1,5 @@
 package rel.rogue.ircool.Commands;
 
-import rel.rogue.ircool.Utils;
 
 /**
  *
@@ -10,7 +9,7 @@ public class Join extends rel.rogue.ircool.CommandExec {
 
     @Override
     public void onCommand(String[] args) {
-       Utils.joinChan(args[0]);
+       rel.rogue.ircool.Utils.joinChan(rel.rogue.ircool.Utils.getChan(args[0]));
     }
 
     @Override

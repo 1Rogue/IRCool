@@ -8,6 +8,7 @@ public class Config {
     
     //TO-DO convert priv variables to configuration in program
     private boolean timestamps = true;
+    private boolean autoJoin = true;
     private String defaultnick = "Ralph";
     private String username = "IRCool";
     private String network = "irc.esper.net";
@@ -16,6 +17,10 @@ public class Config {
     
     public boolean enabletime () {
         return timestamps;
+    }
+    
+    public boolean enableAutoJoin() {
+        return autoJoin;
     }
     
     /*public String[] getDefaultChannels() {

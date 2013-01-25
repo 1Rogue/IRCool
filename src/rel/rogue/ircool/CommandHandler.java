@@ -6,16 +6,14 @@ package rel.rogue.ircool;
  */
 public class CommandHandler {
     
-    java.util.List<CommandExec> commandList = new java.util.ArrayList();
+    private static java.util.List<CommandExec> commandList = new java.util.ArrayList();
 
     public void setExecutor(CommandExec cmdExec) {
-        this.commandList.remove(cmdExec);
-        this.commandList.add(cmdExec);
-        System.out.println("Added " + cmdExec.toString() + " to command list!");
+        commandList.remove(cmdExec);
+        commandList.add(cmdExec);
     }
     
     public void parseCommand(String command) {
-        System.out.println("Made it to parseCommand!");
         command = command.substring(1);
         String[] temp = command.split(" ");
         String comm = temp[0].replace("/", " ");
@@ -28,12 +26,14 @@ public class CommandHandler {
     }
     
     public void sendCommand(String command, String[] args) {
-         System.out.println("Made it to sendCommand!");
          CommandExec exec = getExecutor(command);
          
          if (exec == null) {
-             System.out.println("Returned null :(");
-             
+             return;
+         }
+         
+         if (args[0].equals("")) {
+             Utils.printAction("§current", "", exec.getUsage());
              return;
          }
          

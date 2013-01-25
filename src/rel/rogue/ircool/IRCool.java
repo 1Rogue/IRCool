@@ -36,7 +36,7 @@ public class IRCool {
         return user;
     }
     
-    public void attachListeners() {
+    private void attachListeners() {
         eventHandler = new EventHandler();
         boolean success = user.getListenerManager().addListener(eventHandler);
         if (success) {
@@ -47,12 +47,13 @@ public class IRCool {
     }
     
     private void enableCommands() {
-        this.cmdHand = new CommandHandler();
-        this.cmdHand.setExecutor(new rel.rogue.ircool.Commands.Nick());
-        this.cmdHand.setExecutor(new rel.rogue.ircool.Commands.Join());
+        cmdHand = new CommandHandler();
+        cmdHand.setExecutor(new rel.rogue.ircool.Commands.Nick());
+        cmdHand.setExecutor(new rel.rogue.ircool.Commands.Join());
+        cmdHand.setExecutor(new rel.rogue.ircool.Commands.Me());
     }
     
-    public void setup () {
+    private void setup () {
         //TODO: add a for-loop for reading input from settings box
         user.setName(settings.getDefaultNick());
         user.setLogin(settings.getUsername());
@@ -63,7 +64,24 @@ public class IRCool {
         }
         this.attachListeners();
         this.enableCommands();
-        MainGUI.addChan("@@console");
+        MainGUI.addChan(Utils.getChan("@@console"));
         Utils.joinDefaultChans(settings.getDefaultChans());
+    }
+    
+    public boolean isBanned () {
+        return true;
+    }
+    
+    public static void disconnectServ() {
+        user.setAutoReconnectChannels(true);
+        user.disconnect();
+    }
+    
+    public static void reconnectServ() {
+        try {
+            user.connect(settings.getNetwork());
+        } catch (java.io.IOException | org.pircbotx.exception.IrcException ex) {
+            Logger.getLogger(IRCool.class.getName()).log(Level.SEVERE, "General exception caught within IRCool.java (line 82)\n", ex);
+        }
     }
 }

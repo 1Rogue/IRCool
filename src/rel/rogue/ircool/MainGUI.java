@@ -13,7 +13,7 @@ public class MainGUI extends javax.swing.JFrame {
     org.pircbotx.PircBotX user = IRCool.getUser();
     private static Config settings = new Config();
     private static java.util.HashMap<String, String> channels = new java.util.HashMap<>();
-    private static java.util.HashMap<String, String> users = new java.util.HashMap<>();
+    private static java.util.HashMap<org.pircbotx.Channel, Object[]> users = new java.util.HashMap<>();
     private static String activeChan = "#Rogue";
     private static CommandHandler cmdHandler = new CommandHandler();
 
@@ -39,7 +39,7 @@ public class MainGUI extends javax.swing.JFrame {
         userList = new javax.swing.JList();
         jScrollPane3 = new javax.swing.JScrollPane();
         textArea = new javax.swing.JTextArea();
-        jButton1 = new javax.swing.JButton();
+        funButton = new javax.swing.JToggleButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -63,6 +63,10 @@ public class MainGUI extends javax.swing.JFrame {
             public Object getElementAt(int i) {
                 Object[] temp = channels.keySet().toArray();
                 java.util.Arrays.sort(temp);
+                if (temp[i].toString().equals("@@console")) {
+                    temp[i] = (Object)user.getServer();
+
+                }
                 return temp[i];
             }
         });
@@ -90,10 +94,11 @@ public class MainGUI extends javax.swing.JFrame {
         textArea.setRows(5);
         jScrollPane3.setViewportView(textArea);
 
-        jButton1.setText("Send");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+        funButton.setText("Fun Button");
+        funButton.setToolTipText("");
+        funButton.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                funButtonItemStateChanged(evt);
             }
         });
 
@@ -102,14 +107,14 @@ public class MainGUI extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(textField, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3))
+                        .addComponent(funButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(textField, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -120,7 +125,7 @@ public class MainGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(textField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1)))
+                    .addComponent(funButton)))
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
         );
@@ -167,10 +172,6 @@ public class MainGUI extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_jMenu1ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        sendMsg();
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void textFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldActionPerformed
         sendMsg();
     }//GEN-LAST:event_textFieldActionPerformed
@@ -190,6 +191,22 @@ public class MainGUI extends javax.swing.JFrame {
             getTextArea().setCaretPosition(MainGUI.getTextArea().getDocument().getLength());
         }
     }//GEN-LAST:event_channelListMouseClicked
+
+    private void funButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_funButtonItemStateChanged
+        switch (evt.getStateChange()) {
+            case 0:
+                IRCool.reconnectServ();
+                setChansRC();
+                break;
+            case 1:
+                setChansDC();
+                IRCool.disconnectServ();
+                break;
+            default:
+                Utils.printConsole("FunButton Error");
+                break;
+        }
+    }//GEN-LAST:event_funButtonItemStateChanged
     
     /**
      * @param args the command line arguments
@@ -243,8 +260,9 @@ public class MainGUI extends javax.swing.JFrame {
         }
     }
     
-    public static void addChan (String chan) {
-        channels.put(chan, "");
+    public static void addChan (org.pircbotx.Channel chan) {
+        channels.put(chan.getName(), "");
+        users.put(chan, rel.rogue.ircool.Parsers.ChannelParser.getChannelUsers(chan.getUsers()));
     }
     public static javax.swing.JTextArea getTextArea() {
         return textArea;
@@ -270,12 +288,29 @@ public class MainGUI extends javax.swing.JFrame {
     public static String getActiveChannel () {
         return activeChan;
     }
+    
+    public void setChansDC () {
+        String[] chans = rel.rogue.ircool.Parsers.ChannelParser.getChannelNames(channels);
+        for (int i=0;i<channels.size(); i++) {
+            channels.put("(" + chans[i] + ")", channels.remove(chans[i]));
+        }
+    }
+    
+    public void setChansRC () {
+        String[] chans = rel.rogue.ircool.Parsers.ChannelParser.getChannelNames(channels);
+        String newkey = "";
+        for (int i=0;i<channels.size(); i++) {
+            newkey = chans[i].substring(1);
+            newkey = chans[i].split("\\)")[0];
+            channels.put("(" + chans[i] + ")", channels.remove(chans[i]));
+        }
+    }
    /* public void previousTextLine() {
         //TO-DO make a system for reteiving previous line of text based on channel
     }*/
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private static javax.swing.JList channelList;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JToggleButton funButton;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;

@@ -6,6 +6,8 @@ package rel.rogue.ircool;
  */
 public abstract class CommandExec {
     
+    public org.pircbotx.PircBotX user = IRCool.getUser();
+    
     public abstract void onCommand (String[] args);
     
     public abstract String[] getTriggers();

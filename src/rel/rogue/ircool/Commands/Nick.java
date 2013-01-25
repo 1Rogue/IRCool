@@ -10,14 +10,14 @@ public class Nick extends CommandExec {
 
     @Override
     public void onCommand(String[] args) {
-        System.out.println("Made it to onCommand in the Nick Class!");
-        rel.rogue.ircool.IRCool.getUser().setName(args[0]);
+        user.changeNick(args[0]);
     }
 
     @Override
     public String[] getTriggers() {
         return new String[] {
-            "nick"
+            "nick",
+            "name"
         };
     }
 
