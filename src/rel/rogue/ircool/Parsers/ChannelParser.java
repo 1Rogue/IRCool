@@ -34,7 +34,20 @@ public class ChannelParser {
     }
     
     public static String[] getChannelUsers(java.util.Set<org.pircbotx.User> set) {
-        return new String[] {"", ""};
+        Object[] people = set.toArray();
+        String[] newlist = new String[people.length];
+        for (int i=0; i<people.length; i++) {
+            newlist[i] = getUserName(people[i].toString());
+        }
+        return newlist;
+    }
+    
+    public static String getUserName(Object username) {
+        String name = username.toString();
+        name = name.split(", ")[0];
+        name = name.substring(10);
+        return name;
+        
     }
     
 }
