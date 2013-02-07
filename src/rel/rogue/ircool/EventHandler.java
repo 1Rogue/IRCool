@@ -9,7 +9,15 @@ public class EventHandler extends org.pircbotx.hooks.ListenerAdapter {
     org.pircbotx.PircBotX user = IRCool.getUser();
     rel.rogue.ircool.Config settings = new rel.rogue.ircool.Config();
     
-    
+    /**
+     * Grabs private messages for printing
+     * 
+     * @param event
+     */
+    @Override
+    public void onPrivateMessage(org.pircbotx.hooks.events.PrivateMessageEvent event) {
+        Utils.printPrivMsg(event.getUser().getNick(), event.getMessage(), false);
+    }
     /**
      * Used for passing messages to client.
      * 
@@ -18,14 +26,6 @@ public class EventHandler extends org.pircbotx.hooks.ListenerAdapter {
     @Override
     public void onMessage(org.pircbotx.hooks.events.MessageEvent event) {
         Utils.printMsg(event.getChannel().getName(), event.getUser().getNick(), event.getMessage());
-        String users = event.getChannel().getUsers().toString();
-        String print = "{";
-        /*for (int i=0; i<(users.length - 1); i++) {'
-            org.pircbotx.User temp = users[i];
-            print = print + users[i] + ", ";
-        }
-        print = print + users[users.length-1] + "}";*/
-        System.out.println("People in chan: " + users);
     }
     
     
@@ -34,11 +34,13 @@ public class EventHandler extends org.pircbotx.hooks.ListenerAdapter {
      * statements.
      * 
      * @param event 
-     */
+     */     
     @Override
     public void onKick(org.pircbotx.hooks.events.KickEvent event) {
         if (event.getRecipient().getNick().equals(user.getNick())) {
             Utils.print(event.getChannel().getName(), "You have been kicked from " + event.getChannel().getName() + ". (" + event.getReason() + ")");
+            MainGUI.setUsers();
+            //MainGUI.clearUsers(event.getChannel());
             //
             /*if (settings.enableAutoJoin() && user.) {
                 user.joinChannel(event.getChannel().getName());
@@ -46,6 +48,8 @@ public class EventHandler extends org.pircbotx.hooks.ListenerAdapter {
         }
         else {
             Utils.print(event.getChannel().getName(), event.getSource().getNick() + " has kicked " + event.getRecipient().getNick() + " from " + event.getChannel().getName() + ". (" + event.getReason() + ")");
+            MainGUI.setUsers();
+            //MainGUI.removeUser(event.getChannel(), event.getRecipient().getNick());
         }
     }
     
@@ -75,5 +79,37 @@ public class EventHandler extends org.pircbotx.hooks.ListenerAdapter {
         else {
             Utils.printToSet(event.getUser().getChannels(), event.getOldNick() + " is now known as " + event.getNewNick(), "name");
         }
+    }
+    
+    @Override
+    public void onJoin(org.pircbotx.hooks.events.JoinEvent event) {
+        if (event.getUser().getNick().equals(user.getNick())) {
+            MainGUI.setUsers();
+            MainGUI.getChannelList().setSelectedValue(event.getChannel().getName(), true);
+            MainGUI.setNewChan(event.getChannel().getName());
+            while (event.getChannel().getTopic().equals("")) {
+                if (!event.getChannel().getTopic().equals("")) {
+                    Utils.print(event.getChannel().getName(), "* Now talking in " + event.getChannel().getName());
+                    Utils.print(event.getChannel().getName(), "* Topic for " + event.getChannel().getName() + " is: \"" + event.getChannel().getTopic() + "\"");
+                    Utils.print(event.getChannel().getName(), "* Topic set by " + event.getChannel().getTopicSetter() + " on " + new java.text.SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z").format(event.getChannel().getTopicTimestamp()));
+                }
+            }
+            MainGUI.updateChannelList();
+        }
+        else {
+            Utils.print(event.getChannel().getName(), "* " + event.getUser().getNick() + " (" + Utils.getFullUser(event.getUser()) + ") has joined " + event.getChannel().getName());
+        }
+        //MainGUI.addUser(event.getChannel(), event.getUser().getNick());
+    }
+    
+    @Override
+    public void onPart(org.pircbotx.hooks.events.PartEvent event) {
+        if (!event.getUser().getNick().equals(user.getNick())) {
+            MainGUI.setUsers();
+        }
+        else {
+            MainGUI.clearUsers(event.getChannel());
+        }
+        //MainGUI.removeUser(event.getChannel(), event.getUser().getNick());
     }
 }
