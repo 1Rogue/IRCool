@@ -32,8 +32,12 @@ public class CommandHandler {
              return;
          }
          
-         if (args[0].equals("")) {
-             Utils.printAction("§current", "", exec.getUsage());
+         if (exec.requiresArgs()==true && exec.takesArgs()==false) {
+             Utils.printAction("§current", "", "Malformed command.");
+         }
+         
+         if ((args[0].equals("") && exec.requiresArgs()==true) || (!args[0].equals("") && exec.takesArgs()==false)) {
+             Utils.printAction("§current", "", "Usage: " + exec.getUsage());
              return;
          }
          
