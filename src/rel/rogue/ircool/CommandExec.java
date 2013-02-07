@@ -13,4 +13,8 @@ public abstract class CommandExec {
     public abstract String[] getTriggers();
     
     public abstract String getUsage();
+    
+    public abstract boolean takesArgs();
+    
+    public abstract boolean requiresArgs();
 }
