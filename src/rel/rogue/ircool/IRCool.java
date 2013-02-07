@@ -50,7 +50,10 @@ public class IRCool {
         cmdHand = new CommandHandler();
         cmdHand.setExecutor(new rel.rogue.ircool.Commands.Nick());
         cmdHand.setExecutor(new rel.rogue.ircool.Commands.Join());
+        cmdHand.setExecutor(new rel.rogue.ircool.Commands.Part());
         cmdHand.setExecutor(new rel.rogue.ircool.Commands.Me());
+        cmdHand.setExecutor(new rel.rogue.ircool.Commands.Reload());
+        cmdHand.setExecutor(new rel.rogue.ircool.Commands.Message());
     }
     
     private void setup () {
