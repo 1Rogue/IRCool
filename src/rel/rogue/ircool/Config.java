@@ -14,6 +14,7 @@ public class Config {
     private String network = "irc.esper.net";
     private String port = "6667";
     private String defaultChans = "#Rogue, #ae97";
+    private String timeConfig = "[HH:mm]";
     
     public boolean enabletime () {
         return timestamps;
@@ -44,5 +45,9 @@ public class Config {
     
     public String getDefaultChans() {
         return defaultChans;
+    }
+    
+    public String getTimeConfig() {
+        return timeConfig;
     }
 }
