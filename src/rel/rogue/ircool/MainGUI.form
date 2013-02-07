@@ -74,13 +74,13 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <Component id="jScrollPane1" min="-2" pref="94" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jScrollPane3" pref="660" max="32767" attributes="0"/>
                       <Group type="102" attributes="0">
                           <Component id="funButton" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Component id="textField" min="-2" pref="470" max="-2" attributes="0"/>
+                          <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                          <Component id="textField" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -117,7 +117,7 @@
             <Component class="javax.swing.JList" name="channelList">
               <Properties>
                 <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new javax.swing.AbstractListModel() {&#xa;    public int getSize() { return channels.size(); }&#xa;    public Object getElementAt(int i) {&#xa;        Object[] temp = channels.keySet().toArray();&#xa;        java.util.Arrays.sort(temp);&#xa;        if (temp[i].toString().equals(&quot;@@console&quot;)) {&#xa;            temp[i] = (Object)user.getServer();&#xa;&#xa;        }&#xa;        return temp[i];&#xa;    }&#xa;}" type="code"/>
+                  <Connection code="new javax.swing.AbstractListModel() {&#xa;    public int getSize() { return channels.size(); }&#xa;    public Object getElementAt(int i) {&#xa;        Object temp = &quot;@@console&quot;;&#xa;        return temp;&#xa;    }&#xa;}" type="code"/>
                 </Property>
                 <Property name="selectionMode" type="int" value="0"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -140,16 +140,13 @@
           <SubComponents>
             <Component class="javax.swing.JList" name="userList">
               <Properties>
-                <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
-                  <StringArray count="5">
-                    <StringItem index="0" value="Item 1"/>
-                    <StringItem index="1" value="Item 2"/>
-                    <StringItem index="2" value="Item 3"/>
-                    <StringItem index="3" value="Item 4"/>
-                    <StringItem index="4" value="Item 5"/>
-                  </StringArray>
+                <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="new javax.swing.AbstractListModel() {&#xa;    String[] strings = {&quot;Loading...&quot;};&#xa;    public int getSize() { return strings.length; }&#xa;    public Object getElementAt(int i) { return strings[i]; }&#xa;}" type="code"/>
                 </Property>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>
