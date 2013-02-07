@@ -21,7 +21,17 @@ public class Join extends rel.rogue.ircool.CommandExec {
 
     @Override
     public String getUsage() {
-        return "USAGE: JOIN <channel>, joins a channel";
+        return "JOIN <channel>, joins a channel";
+    }
+
+    @Override
+    public boolean takesArgs() {
+        return true;
+    }
+
+    @Override
+    public boolean requiresArgs() {
+        return true;
     }
 
 }

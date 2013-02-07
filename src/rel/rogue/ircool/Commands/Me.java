@@ -29,7 +29,17 @@ public class Me extends rel.rogue.ircool.CommandExec {
 
     @Override
     public String getUsage() {
-        return "Usage: ME <action>, sends the action to the current channel (actions are written in the 3rd person, like /me jumps)";
+        return "ME <action>, sends the action to the current channel (actions are written in the 3rd person, like /me jumps)";
+    }
+
+    @Override
+    public boolean takesArgs() {
+        return true;
+    }
+
+    @Override
+    public boolean requiresArgs() {
+        return true;
     }
 
 }
