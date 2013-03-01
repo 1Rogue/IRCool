@@ -1,4 +1,4 @@
-package rel.rogue.ircool.Commands;
+package rel.rogue.ircool.commands;
 
 import rel.rogue.ircool.MainGUI;
 import rel.rogue.ircool.Utils;

@@ -1,4 +1,4 @@
-package rel.rogue.ircool.Parsers;
+package rel.rogue.ircool.parsers;
 
 /**
  *

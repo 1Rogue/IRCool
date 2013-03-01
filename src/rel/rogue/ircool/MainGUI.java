@@ -13,10 +13,10 @@ public class MainGUI extends javax.swing.JFrame {
     private static org.pircbotx.PircBotX statuser = IRCool.getUser();
     org.pircbotx.PircBotX user = IRCool.getUser();
     private static Config settings = new Config();
-    private static java.util.HashMap<String, String> channels = new java.util.HashMap<>();
     private static java.util.HashMap<org.pircbotx.Channel, Object[]> users = new java.util.HashMap<>();
     private static String activeChan = "#Rogue";
     private static CommandHandler cmdHandler = new CommandHandler();
+    private rel.rogue.ircool.components.ChannelList ChannelList = new rel.rogue.ircool.components.ChannelList();
 
     /**
      * Creates new form MainGUI
@@ -323,14 +323,14 @@ public class MainGUI extends javax.swing.JFrame {
     }
     
     public void setChansDC () {
-        String[] chans = rel.rogue.ircool.Parsers.ChannelParser.getChannelNames(channels);
+        String[] chans = rel.rogue.ircool.parsers.ChannelParser.getChannelNames(channels);
         for (int i=0;i<channels.size(); i++) {
             channels.put("(" + chans[i] + ")", channels.remove(chans[i]));
         }
     }
     
     public void setChansRC () {
-        String[] chans = rel.rogue.ircool.Parsers.ChannelParser.getChannelNames(channels);
+        String[] chans = rel.rogue.ircool.parsers.ChannelParser.getChannelNames(channels);
         String newkey = "";
         for (int i=0;i<channels.size(); i++) {
             newkey = chans[i].substring(1);
@@ -339,7 +339,7 @@ public class MainGUI extends javax.swing.JFrame {
         }
     }
     public static void setUsers() {
-        Object[] put = rel.rogue.ircool.Parsers.ChannelParser.getChannelUsers(Utils.getChan(activeChan).getUsers());
+        Object[] put = rel.rogue.ircool.parsers.ChannelParser.getChannelUsers(Utils.getChan(activeChan).getUsers());
         java.util.Arrays.sort(put);
         //TODO finish sorting by ops/voiced/etc.
         /*java.util.List ops = new java.util.LinkedList();
@@ -370,6 +370,10 @@ public class MainGUI extends javax.swing.JFrame {
         getUserList().setListData(put);
     }
     
+    public static java.util.HashMap getChannels() {
+        return channels;
+    }
+    
     public static void setNewChan(String chan) {
         if (channels.containsKey(chan)) {
             switchChan();
@@ -379,7 +383,7 @@ public class MainGUI extends javax.swing.JFrame {
         }
     }
     
-    private static void switchChan() {
+    public static void switchChan() {
         if (!(channelList.getSelectedValue().toString().equals(activeChan))) {
             channels.put(activeChan, getTextArea().getText());
             activeChan = channelList.getSelectedValue().toString();

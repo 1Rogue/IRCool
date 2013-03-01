@@ -64,7 +64,7 @@ public class Utils {
         switch (parse) {
             case "name":
                 //TODO make channel parser class, instead of print statement.
-                String[] channel = rel.rogue.ircool.Parsers.ChannelParser.getChannelNames(set);
+                String[] channel = rel.rogue.ircool.parsers.ChannelParser.getChannelNames(set);
                 for (int i = 0; i<channel.length; i++) {
                     Utils.print(channel[i], message);
                 }

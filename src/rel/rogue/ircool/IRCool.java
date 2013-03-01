@@ -48,12 +48,12 @@ public class IRCool {
     
     private void enableCommands() {
         cmdHand = new CommandHandler();
-        cmdHand.setExecutor(new rel.rogue.ircool.Commands.Nick());
-        cmdHand.setExecutor(new rel.rogue.ircool.Commands.Join());
-        cmdHand.setExecutor(new rel.rogue.ircool.Commands.Part());
-        cmdHand.setExecutor(new rel.rogue.ircool.Commands.Me());
-        cmdHand.setExecutor(new rel.rogue.ircool.Commands.Reload());
-        cmdHand.setExecutor(new rel.rogue.ircool.Commands.Message());
+        cmdHand.setExecutor(new rel.rogue.ircool.commands.Nick());
+        cmdHand.setExecutor(new rel.rogue.ircool.commands.Join());
+        cmdHand.setExecutor(new rel.rogue.ircool.commands.Part());
+        cmdHand.setExecutor(new rel.rogue.ircool.commands.Me());
+        cmdHand.setExecutor(new rel.rogue.ircool.commands.Reload());
+        cmdHand.setExecutor(new rel.rogue.ircool.commands.Message());
     }
     
     private void setup () {

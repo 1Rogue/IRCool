@@ -1,36 +1,38 @@
-package rel.rogue.ircool.Commands;
+package rel.rogue.ircool.commands;
+
+import rel.rogue.ircool.CommandExec;
 
 /**
  *
  * @author Spencer
  */
-public class Reload extends rel.rogue.ircool.CommandExec {
+public class Nick extends CommandExec {
 
     @Override
     public void onCommand(String[] args) {
-        rel.rogue.ircool.MainGUI.updateChannelList();
+        user.changeNick(args[0]);
     }
 
     @Override
     public String[] getTriggers() {
         return new String[] {
-            "reload"
+            "nick",
+            "name"
         };
     }
 
     @Override
     public String getUsage() {
-        return "RELOAD: Reloads the Channel List and User List";
+        return "NICK <new nick>, sets your nickname.";
     }
 
     @Override
     public boolean takesArgs() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean requiresArgs() {
-        return false;
+        return true;
     }
-
 }

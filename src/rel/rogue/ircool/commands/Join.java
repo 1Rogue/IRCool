@@ -1,29 +1,27 @@
-package rel.rogue.ircool.Commands;
+package rel.rogue.ircool.commands;
 
-import rel.rogue.ircool.CommandExec;
 
 /**
  *
  * @author Spencer
  */
-public class Nick extends CommandExec {
+public class Join extends rel.rogue.ircool.CommandExec {
 
     @Override
     public void onCommand(String[] args) {
-        user.changeNick(args[0]);
+       rel.rogue.ircool.Utils.joinChan(rel.rogue.ircool.Utils.getChan(args[0]));
     }
 
     @Override
     public String[] getTriggers() {
         return new String[] {
-            "nick",
-            "name"
+            "join"
         };
     }
 
     @Override
     public String getUsage() {
-        return "NICK <new nick>, sets your nickname.";
+        return "JOIN <channel>, joins a channel";
     }
 
     @Override
@@ -35,4 +33,5 @@ public class Nick extends CommandExec {
     public boolean requiresArgs() {
         return true;
     }
+
 }
