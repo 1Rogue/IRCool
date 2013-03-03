@@ -19,11 +19,12 @@ public class MainGUI extends javax.swing.JFrame {
     private rel.rogue.ircool.components.ChannelList chanList = new rel.rogue.ircool.components.ChannelList();
     
     
-    public void link (IRCool irc, Utils ut, Config cf, CommandHandler ch, rel.rogue.ircool.components.ChannelList cl) {
+    public MainGUI link (IRCool irc, Utils ut, Config cf, CommandHandler ch, rel.rogue.ircool.components.ChannelList cl) {
         client = irc;
         Utils = ut;
         settings = cf;
         cmdHandler = ch;
+        return this;
     }
 
     /**

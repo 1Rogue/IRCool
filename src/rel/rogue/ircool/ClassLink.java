@@ -18,7 +18,7 @@ public class ClassLink {
     public void connectClasses(IRCool main) {
         IRCool = main;
         IRCool.link(Config, EventHandler, CommandHandler, Utils, chanList);
-        MainGUI.link(IRCool, Utils, Config, CommandHandler, chanList);
+        MainGUI = MainGUI.link(IRCool, Utils, Config, CommandHandler, chanList);
         CommandHandler.link(Utils);
         Utils.link(IRCool, ChannelParser, Config, chanList, MainGUI);
         EventHandler.link(IRCool, Utils, MainGUI, chanList, Config);
