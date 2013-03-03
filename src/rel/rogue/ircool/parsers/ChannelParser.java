@@ -8,7 +8,7 @@ public class ChannelParser {
     
     java.util.ArrayList<String> temp = new java.util.ArrayList<>();
     
-    public static String[] getChannelNames(java.util.Set<org.pircbotx.Channel> set) {
+    public String[] getChannelNames(java.util.Set<org.pircbotx.Channel> set) {
         Object[] chanlist = set.toArray();
         String[] chans = new String[chanlist.length];
         for (int i=0; i<chanlist.length; i++) {
@@ -17,7 +17,7 @@ public class ChannelParser {
         return chans;
     }
     
-    public static String[] getChannelNames(java.util.HashMap<String, String> set) {
+    public String[] getChannelNames(java.util.HashMap<String, String> set) {
         Object[] chanlist = set.keySet().toArray();
         String[] chans = new String[chanlist.length];
         for (int i=0; i<chanlist.length; i++) {
@@ -26,14 +26,14 @@ public class ChannelParser {
         return chans;
     }
     
-    private static String getChannelName(Object channel) {
+    private String getChannelName(Object channel) {
         String chan = channel.toString();
         chan = chan.split(", ")[0];
         chan = chan.substring(13);
         return chan;
     }
     
-    public static String[] getChannelUsers(java.util.Set<org.pircbotx.User> set) {
+    public String[] getChannelUsers(java.util.Set<org.pircbotx.User> set) {
         Object[] people = set.toArray();
         String[] newlist = new String[people.length];
         for (int i=0; i<people.length; i++) {
@@ -42,7 +42,7 @@ public class ChannelParser {
         return newlist;
     }
     
-    public static String getUserName(Object username) {
+    public String getUserName(Object username) {
         String name = username.toString();
         name = name.split(", ")[0];
         name = name.substring(10);

@@ -6,7 +6,12 @@ package rel.rogue.ircool;
  */
 public class CommandHandler {
     
-    private static java.util.List<CommandExec> commandList = new java.util.ArrayList();
+    private Utils Utils;
+    private java.util.List<CommandExec> commandList = new java.util.ArrayList();
+    
+    public void link (Utils ut) {
+        Utils = ut;
+    }
 
     public void setExecutor(CommandExec cmdExec) {
         commandList.remove(cmdExec);

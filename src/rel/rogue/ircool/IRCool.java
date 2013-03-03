@@ -9,30 +9,46 @@ import java.util.logging.Logger;
  */
 public class IRCool {
     
-    private static Config settings = new Config();
-    private static org.pircbotx.PircBotX user;
-    private static EventHandler eventHandler;
-    public CommandHandler cmdHand;
+    private ClassLink CL = new ClassLink();
+    private Config settings;
+    private org.pircbotx.PircBotX user;
+    private EventHandler eventHandler;
+    private CommandHandler cmdHand;
+    private Utils Utils;
+    private rel.rogue.ircool.components.ChannelList chanList;
     
     public static void main (String[] args) {
         new IRCool();
     }
     
-    public IRCool() {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                MainGUI window = new MainGUI();
-                window.setVisible(true);
-            }
-        });
-        user = new org.pircbotx.PircBotX();
-        this.setup();
-        user.setVersion("Beta");
-        user.setVerbose(false);
+    public void link(Config cf, EventHandler eh, CommandHandler ch, Utils ut, rel.rogue.ircool.components.ChannelList cl) {
+        settings = cf;
+        eventHandler = eh;
+        cmdHand = ch;
+        Utils = ut;
+        chanList = cl;
     }
     
-    public static org.pircbotx.PircBotX getUser() {
+    public IRCool() {
+        if (StaticHold.getTest() == 0) {
+            CL.connectClasses(this);
+            Utils.printConsole("IRCool Constructor called");
+            StaticHold.setTest(1);
+            javax.swing.SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    MainGUI window = new MainGUI();
+                    window.setVisible(true);
+                }
+            });
+            user = new org.pircbotx.PircBotX();
+            this.setup();
+            user.setVersion("Beta");
+            user.setVerbose(false);
+        }
+    }
+    
+    public org.pircbotx.PircBotX getUser() {
         return user;
     }
     
@@ -65,9 +81,9 @@ public class IRCool {
         } catch (java.io.IOException | org.pircbotx.exception.IrcException ex) {
             Logger.getLogger(IRCool.class.getName()).log(Level.SEVERE, "General exception caught within IRCool.java (line 53)\n", ex);
         }
+        chanList.addChan(Utils.getChan("@@console"));
         this.attachListeners();
         this.enableCommands();
-        MainGUI.addChan(Utils.getChan("@@console"));
         Utils.joinDefaultChans(settings.getDefaultChans());
     }
     
@@ -75,12 +91,12 @@ public class IRCool {
         return true;
     }
     
-    public static void disconnectServ() {
+    public void disconnectServ() {
         user.setAutoReconnectChannels(true);
         user.disconnect();
     }
     
-    public static void reconnectServ() {
+    public void reconnectServ() {
         try {
             user.connect(settings.getNetwork());
         } catch (java.io.IOException | org.pircbotx.exception.IrcException ex) {

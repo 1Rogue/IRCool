@@ -6,7 +6,12 @@ package rel.rogue.ircool;
  */
 public abstract class CommandExec {
     
-    public org.pircbotx.PircBotX user = IRCool.getUser();
+    protected ClassLink CL = new ClassLink();
+    protected IRCool client = new IRCool();
+    protected Utils Utils = CL.getUtils();
+    protected org.pircbotx.PircBotX user = client.getUser();
+    protected MainGUI gui = CL.getMainGUI();
+    protected rel.rogue.ircool.components.ChannelList chanList = CL.getChanList();
     
     public abstract void onCommand (String[] args);
     

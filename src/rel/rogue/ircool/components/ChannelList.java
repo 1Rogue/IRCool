@@ -10,7 +10,15 @@ package rel.rogue.ircool.components;
  */
 public class ChannelList extends javax.swing.JPanel {
     
-    private static java.util.HashMap<String, String> channels = new java.util.HashMap<>();
+    private rel.rogue.ircool.parsers.ChannelParser chanParser;
+    private java.util.HashMap<String, String> channels = new java.util.HashMap<>();
+    private String activeChan = "#Rogue";
+    private rel.rogue.ircool.MainGUI gui;
+    
+    public void link (rel.rogue.ircool.parsers.ChannelParser cp, rel.rogue.ircool.MainGUI mg) {
+        chanParser = cp;
+        gui = mg;
+    }
 
     /**
      * Creates new form ChannelList
@@ -61,11 +69,78 @@ public class ChannelList extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void channelListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_channelListMouseClicked
-        rel.rogue.ircool.MainGUI.switchChan();
+        this.switchChan();
     }//GEN-LAST:event_channelListMouseClicked
 
     public java.util.HashMap getChannels() {
         return channels;
+    }
+    
+    public javax.swing.JList getChannelList() {
+        return channelList;
+    }
+    
+    public String getActiveChannel() {
+        return activeChan;
+    }
+    
+    public void addChan (org.pircbotx.Channel chan) {
+        this.getChannels().put(chan.getName(), "");
+        this.updateChannelList();
+    }
+    
+    public void updateChannelList() {
+        System.out.println("I've been called! -updateChannelList");
+        this.getChannelList().setModel(new javax.swing.AbstractListModel() {
+            public int getSize() { return channels.size(); }
+            public Object getElementAt(int i) {
+                Object[] temp = channels.keySet().toArray();
+                java.util.Arrays.sort(temp);
+                return temp[i];
+            }
+        });
+    }
+    
+    public void setChansDC () {
+        String[] chans = chanParser.getChannelNames(this.getChannels());
+        for (int i=0;i<this.getChannels().size(); i++) {
+            this.getChannels().put("(" + chans[i] + ")", this.getChannels().remove(chans[i]));
+        }
+    }
+    
+    public void setChansRC () {
+        String[] chans = chanParser.getChannelNames(channels);
+        String newkey = "";
+        for (int i=0;i<this.getChannels().size(); i++) {
+            newkey = chans[i].substring(1);
+            newkey = chans[i].split("\\)")[0];
+            this.getChannels().put("(" + chans[i] + ")", this.getChannels().remove(chans[i]));
+        }
+    }
+    public void setNewChan(String chan) {
+        if (this.getChannels().containsKey(chan)) {
+            switchChan();
+        }
+        else {
+            getChannelList().setSelectedValue("@@console", true);
+        }
+    }
+    
+    public void switchChan() {
+        if (!(this.getChannelList().getSelectedValue().toString().equals(this.getActiveChannel()))) {
+            System.out.println(this.getChannels());
+            System.out.println();
+            System.out.println(this.getActiveChannel());
+            System.out.println();
+            System.out.println(gui.getTextArea().getText());
+            this.getChannels().put(this.getActiveChannel(), gui.getTextArea().getText());
+            activeChan = this.getChannelList().getSelectedValue().toString();
+            gui.getTextArea().setText("");
+            gui.getUserList().setListData(new Object[]{""});
+            gui.getTextArea().append(channels.get(activeChan));
+            gui.setUsers();
+            gui.getTextArea().setCaretPosition(gui.getTextArea().getDocument().getLength());
+        }
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

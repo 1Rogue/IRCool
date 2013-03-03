@@ -10,13 +10,21 @@ package rel.rogue.ircool;
  */
 public class MainGUI extends javax.swing.JFrame {
     
-    private static org.pircbotx.PircBotX statuser = IRCool.getUser();
-    org.pircbotx.PircBotX user = IRCool.getUser();
-    private static Config settings = new Config();
-    private static java.util.HashMap<org.pircbotx.Channel, Object[]> users = new java.util.HashMap<>();
-    private static String activeChan = "#Rogue";
-    private static CommandHandler cmdHandler = new CommandHandler();
-    private rel.rogue.ircool.components.ChannelList ChannelList = new rel.rogue.ircool.components.ChannelList();
+    private IRCool client;
+    private Utils Utils;
+    private org.pircbotx.PircBotX user;
+    private Config settings;
+    private java.util.HashMap<org.pircbotx.Channel, Object[]> users;
+    private CommandHandler cmdHandler;
+    private rel.rogue.ircool.components.ChannelList chanList = new rel.rogue.ircool.components.ChannelList();
+    
+    
+    public void link (IRCool irc, Utils ut, Config cf, CommandHandler ch, rel.rogue.ircool.components.ChannelList cl) {
+        client = irc;
+        Utils = ut;
+        settings = cf;
+        cmdHandler = ch;
+    }
 
     /**
      * Creates new form MainGUI
@@ -35,7 +43,6 @@ public class MainGUI extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         textField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        channelList = new javax.swing.JList();
         jScrollPane2 = new javax.swing.JScrollPane();
         userList = new javax.swing.JList();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -59,22 +66,7 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
 
-        channelList.setModel(new javax.swing.AbstractListModel() {
-            public int getSize() { return channels.size(); }
-            public Object getElementAt(int i) {
-                Object temp = "@@console";
-                return temp;
-            }
-        });
-        channelList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        channelList.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        channelList.setName(""); // NOI18N
-        channelList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                channelListMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(channelList);
+        jScrollPane1.setViewportView(new rel.rogue.ircool.components.ChannelList());
 
         userList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = {"Loading..."};
@@ -178,19 +170,15 @@ public class MainGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_textFieldKeyPressed
 
-    private void channelListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_channelListMouseClicked
-        switchChan();
-    }//GEN-LAST:event_channelListMouseClicked
-
     private void funButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_funButtonItemStateChanged
         switch (evt.getStateChange()) {
             case 0:
-                IRCool.reconnectServ();
-                setChansRC();
+                client.reconnectServ();
+                chanList.setChansRC();
                 break;
             case 1:
-                setChansDC();
-                IRCool.disconnectServ();
+                chanList.setChansDC();
+                client.disconnectServ();
                 break;
             default:
                 Utils.printConsole("FunButton Error");
@@ -214,13 +202,7 @@ public class MainGUI extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
@@ -238,21 +220,14 @@ public class MainGUI extends javax.swing.JFrame {
         String text = textField.getText();
         if (!text.isEmpty()) {
             if (text.startsWith("/")/* && (text.length() > 1)*/) {
-                //TO-DO Link to CommandHandler
                 cmdHandler.parseCommand(text);
-                //Utils.printCurrent("Command recognized");
             }
             else {
-                user.sendMessage(activeChan, text);
-                Utils.printMsg(activeChan, user.getNick(), text);
+                user.sendMessage(chanList.getActiveChannel(), text);
+                Utils.printMsg(chanList.getActiveChannel(), user.getNick(), text);
             }
             textField.setText("");
         }
-    }
-    
-    public static void addChan (org.pircbotx.Channel chan) {
-        channels.put(chan.getName(), "");
-        updateChannelList();
     }
     /*public static void addUser (org.pircbotx.Channel chan, String user) {
         Object[] temp = users.get(chan);
@@ -270,31 +245,17 @@ public class MainGUI extends javax.swing.JFrame {
         users.put(chan, newlist);
         updateUserList();
     }*/
-    public static void clearUsers (org.pircbotx.Channel chan) {
-        if (channelList.getSelectedValue().toString().equals(chan.getName())) {
+    public void clearUsers (org.pircbotx.Channel chan) {
+        if (chanList.getChannelList().getSelectedValue().toString().equals(chan.getName())) {
             getUserList().setListData(new Object[]{""});
         }
         users.put(chan, new Object[]{""});
     }
-    public static javax.swing.JTextArea getTextArea() {
+    public javax.swing.JTextArea getTextArea() {
         return textArea;
     }
-    public static javax.swing.JList getChannelList() {
-        return channelList;
-    }
-    public static javax.swing.JList getUserList() {
+    public javax.swing.JList getUserList() {
         return userList;
-    }
-    public static void updateChannelList() {
-        System.out.println("I've been called! -updateChannelList");
-        channelList.setModel(new javax.swing.AbstractListModel() {
-            public int getSize() { return channels.size(); }
-            public Object getElementAt(int i) {
-                Object[] temp = channels.keySet().toArray();
-                java.util.Arrays.sort(temp);
-                return temp[i];
-            }
-        });
     }
     /*public static void updateUserList() {
         System.out.println("I've been called! -updateUserList");
@@ -313,33 +274,22 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
     }*/
-    public static void write (String channel, String message) {
-        String temp = channels.get(channel);
-        temp = temp + message;
-        channels.put(channel, temp);
-    }
-    public static String getActiveChannel () {
-        return activeChan;
-    }
-    
-    public void setChansDC () {
-        String[] chans = rel.rogue.ircool.parsers.ChannelParser.getChannelNames(channels);
-        for (int i=0;i<channels.size(); i++) {
-            channels.put("(" + chans[i] + ")", channels.remove(chans[i]));
+    public void write (String channel, String message) {
+        String temp = "";
+        /*if (chanList != null) {
+            if (chanList.getChannels().get(channel).toString() != null) {
+                temp = chanList.getChannels().get(channel).toString();
+                temp = temp + message;
+                chanList.getChannels().put(channel, temp);
+            }
         }
+        else {
+            Utils.printConsole("Well FUCK the chanList is null");
+        }*/
     }
-    
-    public void setChansRC () {
-        String[] chans = rel.rogue.ircool.parsers.ChannelParser.getChannelNames(channels);
-        String newkey = "";
-        for (int i=0;i<channels.size(); i++) {
-            newkey = chans[i].substring(1);
-            newkey = chans[i].split("\\)")[0];
-            channels.put("(" + chans[i] + ")", channels.remove(chans[i]));
-        }
-    }
-    public static void setUsers() {
-        Object[] put = rel.rogue.ircool.parsers.ChannelParser.getChannelUsers(Utils.getChan(activeChan).getUsers());
+    public void setUsers() {
+        rel.rogue.ircool.parsers.ChannelParser chanParser = new rel.rogue.ircool.parsers.ChannelParser();
+        Object[] put = chanParser.getChannelUsers(Utils.getChan(chanList.getActiveChannel()).getUsers());
         java.util.Arrays.sort(put);
         //TODO finish sorting by ops/voiced/etc.
         /*java.util.List ops = new java.util.LinkedList();
@@ -369,36 +319,10 @@ public class MainGUI extends javax.swing.JFrame {
         getUserList().setListData(newlist);*/
         getUserList().setListData(put);
     }
-    
-    public static java.util.HashMap getChannels() {
-        return channels;
-    }
-    
-    public static void setNewChan(String chan) {
-        if (channels.containsKey(chan)) {
-            switchChan();
-        }
-        else {
-            getChannelList().setSelectedValue("@@console", true);
-        }
-    }
-    
-    public static void switchChan() {
-        if (!(channelList.getSelectedValue().toString().equals(activeChan))) {
-            channels.put(activeChan, getTextArea().getText());
-            activeChan = channelList.getSelectedValue().toString();
-            getTextArea().setText("");
-            getUserList().setListData(new Object[]{""});
-            getTextArea().append(channels.get(activeChan));
-            setUsers();
-            getTextArea().setCaretPosition(MainGUI.getTextArea().getDocument().getLength());
-        }
-    }
    /* public void previousTextLine() {
         //TO-DO make a system for reteiving previous line of text based on channel
     }*/
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private static javax.swing.JList channelList;
     private javax.swing.JToggleButton funButton;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;

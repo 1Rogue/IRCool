@@ -9,7 +9,7 @@ public class Join extends rel.rogue.ircool.CommandExec {
 
     @Override
     public void onCommand(String[] args) {
-       rel.rogue.ircool.Utils.joinChan(rel.rogue.ircool.Utils.getChan(args[0]));
+       Utils.joinChan(Utils.getChan(args[0]));
     }
 
     @Override
