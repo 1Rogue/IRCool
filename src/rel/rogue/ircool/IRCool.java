@@ -54,6 +54,8 @@ public class IRCool {
         cmdHand.setExecutor(new rel.rogue.ircool.commands.Me());
         cmdHand.setExecutor(new rel.rogue.ircool.commands.Reload());
         cmdHand.setExecutor(new rel.rogue.ircool.commands.Message());
+        cmdHand.setExecutor(new rel.rogue.ircool.commands.Kick());
+        cmdHand.setExecutor(new rel.rogue.ircool.commands.Debug());
     }
     
     private void setup () {
@@ -67,7 +69,7 @@ public class IRCool {
         }
         this.attachListeners();
         this.enableCommands();
-        MainGUI.addChan(Utils.getChan("@@console"));
+        rel.rogue.ircool.components.ChannelList.addChan(Utils.getChan("@@console"));
         Utils.joinDefaultChans(settings.getDefaultChans());
     }
     
@@ -86,5 +88,16 @@ public class IRCool {
         } catch (java.io.IOException | org.pircbotx.exception.IrcException ex) {
             Logger.getLogger(IRCool.class.getName()).log(Level.SEVERE, "General exception caught within IRCool.java (line 82)\n", ex);
         }
+    }
+    
+    public static void shutdown(int w) {
+        for (int i=0; i<MainGUI.getWindows().length; i++) {
+            MainGUI.getWindows()[i].dispose();
+        }
+        System.exit(w);
+    }
+    
+    public IRCool getInstance() {
+        return this;
     }
 }

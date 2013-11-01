@@ -18,7 +18,7 @@ public class Utils {
     }
     public static void print (String channel, String message) {
         message = format(message);
-        if ((MainGUI.getActiveChannel().equals(channel)) || channel.equals("§current")) {
+        if ((rel.rogue.ircool.components.ChannelList.getActiveChannel().equals(channel)) || channel.equals("§current")) {
             printCurrent(message);
         }
         else {
@@ -28,19 +28,23 @@ public class Utils {
     
     public static void printBackground (String channel, String message) {
         System.out.print(channel + ": " + message);
-        MainGUI.write(channel, message);
+        rel.rogue.ircool.components.ChannelList.write(channel, message);
     }
     
     public static void printCurrent (String message) {
-        System.out.print(MainGUI.getActiveChannel() + ": " + message);
+        System.out.print(rel.rogue.ircool.components.ChannelList.getActiveChannel() + ": " + message);
         MainGUI.getTextArea().append(message);
         MainGUI.getTextArea().setCaretPosition(MainGUI.getTextArea().getDocument().getLength());
     }
     public static void printConsole (String message) {
         message = format(message);
         System.out.print("Console: " + message);
-        MainGUI.write("@@console", message);
-        
+        if (rel.rogue.ircool.components.ChannelList.getActiveChannel().equals("@@console")) {
+            printCurrent(message);
+        }
+        else {
+            rel.rogue.ircool.components.ChannelList.write("@@console", message);
+        }
     }
     public static void printMsg (String channel, String sender, String message) {
         print(channel, "<" + sender + "> " + message);
@@ -82,7 +86,7 @@ public class Utils {
     public static void joinChan (org.pircbotx.Channel chan) {
         Utils.printConsole("Attempting to join " + chan.getName());
         rel.rogue.ircool.IRCool.getUser().joinChannel(chan.getName());
-        rel.rogue.ircool.MainGUI.addChan(chan);
+        rel.rogue.ircool.components.ChannelList.addChan(chan);
         //rel.rogue.ircool.MainGUI.updateChannelList();
     }
     

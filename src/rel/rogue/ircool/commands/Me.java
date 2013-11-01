@@ -14,7 +14,7 @@ public class Me extends rel.rogue.ircool.CommandExec {
             send = send + args[i] + " ";
         }
         send = send + args[args.length-1];
-        user.sendAction(rel.rogue.ircool.MainGUI.getActiveChannel(), send);
+        user.sendAction(rel.rogue.ircool.components.ChannelList.getActiveChannel(), send);
         rel.rogue.ircool.Utils.printAction("§current", user.getNick(), send);
     }
 

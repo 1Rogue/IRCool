@@ -8,7 +8,7 @@ public class Reload extends rel.rogue.ircool.CommandExec {
 
     @Override
     public void onCommand(String[] args) {
-        rel.rogue.ircool.MainGUI.updateChannelList();
+        rel.rogue.ircool.components.ChannelList.updateChannelList();
     }
 
     @Override

@@ -9,11 +9,11 @@ public class Config {
     //TO-DO convert priv variables to configuration in program
     private boolean timestamps = true;
     private boolean autoJoin = true;
-    private String defaultnick = "Ralph";
+    private String defaultnick = "Spencer";
     private String username = "IRCool";
     private String network = "irc.esper.net";
     private String port = "6667";
-    private String defaultChans = "#Rogue, #ae97";
+    private String defaultChans = "#circlechat";
     private String timeConfig = "[HH:mm]";
     
     public boolean enabletime () {

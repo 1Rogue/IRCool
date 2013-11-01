@@ -24,7 +24,7 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="channelList" min="-2" pref="550" max="-2" attributes="0"/>
+          <Component id="channelList" pref="550" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>

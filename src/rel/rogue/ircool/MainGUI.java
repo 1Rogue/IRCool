@@ -4,6 +4,8 @@
  */
 package rel.rogue.ircool;
 
+import rel.rogue.ircool.components.ChannelList;
+
 /**
  *
  * @author Spencer
@@ -14,9 +16,8 @@ public class MainGUI extends javax.swing.JFrame {
     org.pircbotx.PircBotX user = IRCool.getUser();
     private static Config settings = new Config();
     private static java.util.HashMap<org.pircbotx.Channel, Object[]> users = new java.util.HashMap<>();
-    private static String activeChan = "#Rogue";
     private static CommandHandler cmdHandler = new CommandHandler();
-    private rel.rogue.ircool.components.ChannelList ChannelList = new rel.rogue.ircool.components.ChannelList();
+    private static rel.rogue.ircool.components.ChannelList chanList;
 
     /**
      * Creates new form MainGUI
@@ -35,7 +36,6 @@ public class MainGUI extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         textField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        channelList = new javax.swing.JList();
         jScrollPane2 = new javax.swing.JScrollPane();
         userList = new javax.swing.JList();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -47,6 +47,7 @@ public class MainGUI extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(204, 204, 255));
 
         textField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -59,22 +60,9 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
 
-        channelList.setModel(new javax.swing.AbstractListModel() {
-            public int getSize() { return channels.size(); }
-            public Object getElementAt(int i) {
-                Object temp = "@@console";
-                return temp;
-            }
-        });
-        channelList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        channelList.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        channelList.setName(""); // NOI18N
-        channelList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                channelListMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(channelList);
+        chanList = new rel.rogue.ircool.components.ChannelList();
+        jScrollPane1.setViewportView(chanList);
+        jScrollPane1.setHorizontalScrollBar(null);
 
         userList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = {"Loading..."};
@@ -85,7 +73,7 @@ public class MainGUI extends javax.swing.JFrame {
 
         textArea.setEditable(false);
         textArea.setColumns(20);
-        textArea.setFont(new java.awt.Font("Arial Unicode MS", 0, 11)); // NOI18N
+        textArea.setFont(new java.awt.Font("Arial Unicode MS", 0, 14)); // NOI18N
         textArea.setLineWrap(true);
         textArea.setRows(5);
         jScrollPane3.setViewportView(textArea);
@@ -127,13 +115,13 @@ public class MainGUI extends javax.swing.JFrame {
         );
 
         jMenu1.setText("File");
-        jMenu1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenu1ActionPerformed(evt);
-            }
-        });
 
         jMenuItem1.setText("Exit");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem1);
 
         jMenuBar1.add(jMenu1);
@@ -163,33 +151,25 @@ public class MainGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu1ActionPerformed
-        user.disconnect();
-        System.exit(0);
-    }//GEN-LAST:event_jMenu1ActionPerformed
-
     private void textFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldActionPerformed
         sendMsg();
     }//GEN-LAST:event_textFieldActionPerformed
 
     private void textFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textFieldKeyPressed
         if (evt.getKeyCode()==38) {
-            //textField.setText(previousTextLine());
+            //textField.setText(rel.rogue.ircool.components.ChannelList.previousTextLine());
+            Utils.printConsole("previousTextLine triggered");
         }
     }//GEN-LAST:event_textFieldKeyPressed
-
-    private void channelListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_channelListMouseClicked
-        switchChan();
-    }//GEN-LAST:event_channelListMouseClicked
 
     private void funButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_funButtonItemStateChanged
         switch (evt.getStateChange()) {
             case 0:
                 IRCool.reconnectServ();
-                setChansRC();
+                rel.rogue.ircool.components.ChannelList.setChansRC();
                 break;
             case 1:
-                setChansDC();
+                rel.rogue.ircool.components.ChannelList.setChansDC();
                 IRCool.disconnectServ();
                 break;
             default:
@@ -197,6 +177,11 @@ public class MainGUI extends javax.swing.JFrame {
                 break;
         }
     }//GEN-LAST:event_funButtonItemStateChanged
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        user.disconnect();
+        IRCool.shutdown(0);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
     
     /**
      * @param args the command line arguments
@@ -243,16 +228,11 @@ public class MainGUI extends javax.swing.JFrame {
                 //Utils.printCurrent("Command recognized");
             }
             else {
-                user.sendMessage(activeChan, text);
-                Utils.printMsg(activeChan, user.getNick(), text);
+                user.sendMessage(rel.rogue.ircool.components.ChannelList.getActiveChannel(), text);
+                Utils.printMsg(rel.rogue.ircool.components.ChannelList.getActiveChannel(), user.getNick(), text);
             }
             textField.setText("");
         }
-    }
-    
-    public static void addChan (org.pircbotx.Channel chan) {
-        channels.put(chan.getName(), "");
-        updateChannelList();
     }
     /*public static void addUser (org.pircbotx.Channel chan, String user) {
         Object[] temp = users.get(chan);
@@ -271,7 +251,7 @@ public class MainGUI extends javax.swing.JFrame {
         updateUserList();
     }*/
     public static void clearUsers (org.pircbotx.Channel chan) {
-        if (channelList.getSelectedValue().toString().equals(chan.getName())) {
+        if (chanList.getChannelList().getSelectedValue().toString().equals(chan.getName())) {
             getUserList().setListData(new Object[]{""});
         }
         users.put(chan, new Object[]{""});
@@ -279,22 +259,8 @@ public class MainGUI extends javax.swing.JFrame {
     public static javax.swing.JTextArea getTextArea() {
         return textArea;
     }
-    public static javax.swing.JList getChannelList() {
-        return channelList;
-    }
     public static javax.swing.JList getUserList() {
         return userList;
-    }
-    public static void updateChannelList() {
-        System.out.println("I've been called! -updateChannelList");
-        channelList.setModel(new javax.swing.AbstractListModel() {
-            public int getSize() { return channels.size(); }
-            public Object getElementAt(int i) {
-                Object[] temp = channels.keySet().toArray();
-                java.util.Arrays.sort(temp);
-                return temp[i];
-            }
-        });
     }
     /*public static void updateUserList() {
         System.out.println("I've been called! -updateUserList");
@@ -313,33 +279,8 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
     }*/
-    public static void write (String channel, String message) {
-        String temp = channels.get(channel);
-        temp = temp + message;
-        channels.put(channel, temp);
-    }
-    public static String getActiveChannel () {
-        return activeChan;
-    }
-    
-    public void setChansDC () {
-        String[] chans = rel.rogue.ircool.parsers.ChannelParser.getChannelNames(channels);
-        for (int i=0;i<channels.size(); i++) {
-            channels.put("(" + chans[i] + ")", channels.remove(chans[i]));
-        }
-    }
-    
-    public void setChansRC () {
-        String[] chans = rel.rogue.ircool.parsers.ChannelParser.getChannelNames(channels);
-        String newkey = "";
-        for (int i=0;i<channels.size(); i++) {
-            newkey = chans[i].substring(1);
-            newkey = chans[i].split("\\)")[0];
-            channels.put("(" + chans[i] + ")", channels.remove(chans[i]));
-        }
-    }
     public static void setUsers() {
-        Object[] put = rel.rogue.ircool.parsers.ChannelParser.getChannelUsers(Utils.getChan(activeChan).getUsers());
+        Object[] put = rel.rogue.ircool.parsers.ChannelParser.getChannelUsers(Utils.getChan(rel.rogue.ircool.components.ChannelList.getActiveChannel()).getUsers());
         java.util.Arrays.sort(put);
         //TODO finish sorting by ops/voiced/etc.
         /*java.util.List ops = new java.util.LinkedList();
@@ -369,36 +310,7 @@ public class MainGUI extends javax.swing.JFrame {
         getUserList().setListData(newlist);*/
         getUserList().setListData(put);
     }
-    
-    public static java.util.HashMap getChannels() {
-        return channels;
-    }
-    
-    public static void setNewChan(String chan) {
-        if (channels.containsKey(chan)) {
-            switchChan();
-        }
-        else {
-            getChannelList().setSelectedValue("@@console", true);
-        }
-    }
-    
-    public static void switchChan() {
-        if (!(channelList.getSelectedValue().toString().equals(activeChan))) {
-            channels.put(activeChan, getTextArea().getText());
-            activeChan = channelList.getSelectedValue().toString();
-            getTextArea().setText("");
-            getUserList().setListData(new Object[]{""});
-            getTextArea().append(channels.get(activeChan));
-            setUsers();
-            getTextArea().setCaretPosition(MainGUI.getTextArea().getDocument().getLength());
-        }
-    }
-   /* public void previousTextLine() {
-        //TO-DO make a system for reteiving previous line of text based on channel
-    }*/
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private static javax.swing.JList channelList;
     private javax.swing.JToggleButton funButton;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;

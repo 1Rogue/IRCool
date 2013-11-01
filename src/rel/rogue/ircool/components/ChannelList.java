@@ -11,6 +11,7 @@ package rel.rogue.ircool.components;
 public class ChannelList extends javax.swing.JPanel {
     
     private static java.util.HashMap<String, String> channels = new java.util.HashMap<>();
+    private static String activeChan = "#Rogue";
 
     /**
      * Creates new form ChannelList
@@ -56,16 +57,89 @@ public class ChannelList extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(channelList, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(channelList, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void channelListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_channelListMouseClicked
-        rel.rogue.ircool.MainGUI.switchChan();
+        switchChan();
     }//GEN-LAST:event_channelListMouseClicked
 
-    public java.util.HashMap getChannels() {
+    public static javax.swing.JList getChannelList() {
+        return channelList;
+    }
+    
+    public static java.util.HashMap getChannels() {
         return channels;
+    }
+    
+    public static String getActiveChannel() {
+        return activeChan;
+    }
+    
+    public static void write (String channel, String message) {
+        String temp = channels.get(channel);
+        temp = temp + message;
+        channels.put(channel, temp);
+    }
+    
+    public static void addChan (org.pircbotx.Channel chan) {
+        channels.put(chan.getName(), "");
+        updateChannelList();
+    }
+    
+    public static void setChansDC () {
+        String[] chans = rel.rogue.ircool.parsers.ChannelParser.getChannelNames(channels);
+        for (int i=0;i<channels.size(); i++) {
+            channels.put("(" + chans[i] + ")", channels.remove(chans[i]));
+        }
+    }
+    
+    public static void setChansRC () {
+        String[] chans = rel.rogue.ircool.parsers.ChannelParser.getChannelNames(channels);
+        String newkey = "";
+        for (int i=0;i<channels.size(); i++) {
+            newkey = chans[i].substring(1);
+            newkey = chans[i].split("\\)")[0];
+            channels.put("(" + chans[i] + ")", channels.remove(chans[i]));
+        }
+    }
+    
+    public static void updateChannelList() {
+        System.out.println("I've been called! -updateChannelList");
+        channelList.setModel(new javax.swing.AbstractListModel() {
+            public int getSize() { return channels.size(); }
+            public Object getElementAt(int i) {
+                Object[] temp = channels.keySet().toArray();
+                java.util.Arrays.sort(temp);
+                return temp[i];
+            }
+        });
+    }
+    
+    public static void setNewChan(String chan) {
+        if (channels.containsKey(chan)) {
+            switchChan();
+        }
+        else {
+            getChannelList().setSelectedValue("@@console", true);
+        }
+    }
+    
+    public static String previousTextLine() {
+        return ""/*TODO Add method for return previous lines*/;
+    }
+    
+    public static void switchChan() {
+        if (!(channelList.getSelectedValue().toString().equals(activeChan))) {
+            channels.put(activeChan, rel.rogue.ircool.MainGUI.getTextArea().getText());
+            activeChan = channelList.getSelectedValue().toString();
+            rel.rogue.ircool.MainGUI.getTextArea().setText("");
+            rel.rogue.ircool.MainGUI.getUserList().setListData(new Object[]{""});
+            rel.rogue.ircool.MainGUI.getTextArea().append(channels.get(activeChan));
+            rel.rogue.ircool.MainGUI.setUsers();
+            rel.rogue.ircool.MainGUI.getTextArea().setCaretPosition(rel.rogue.ircool.MainGUI.getTextArea().getDocument().getLength());
+        }
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

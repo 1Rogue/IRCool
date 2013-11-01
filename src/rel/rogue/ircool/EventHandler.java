@@ -85,8 +85,8 @@ public class EventHandler extends org.pircbotx.hooks.ListenerAdapter {
     public void onJoin(org.pircbotx.hooks.events.JoinEvent event) {
         if (event.getUser().getNick().equals(user.getNick())) {
             MainGUI.setUsers();
-            MainGUI.getChannelList().setSelectedValue(event.getChannel().getName(), true);
-            MainGUI.setNewChan(event.getChannel().getName());
+            rel.rogue.ircool.components.ChannelList.getChannelList().setSelectedValue(event.getChannel().getName(), true);
+            rel.rogue.ircool.components.ChannelList.setNewChan(event.getChannel().getName());
             while (event.getChannel().getTopic().equals("")) {
                 if (!event.getChannel().getTopic().equals("")) {
                     Utils.print(event.getChannel().getName(), "* Now talking in " + event.getChannel().getName());
@@ -94,7 +94,7 @@ public class EventHandler extends org.pircbotx.hooks.ListenerAdapter {
                     Utils.print(event.getChannel().getName(), "* Topic set by " + event.getChannel().getTopicSetter() + " on " + new java.text.SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z").format(event.getChannel().getTopicTimestamp()));
                 }
             }
-            MainGUI.updateChannelList();
+            rel.rogue.ircool.components.ChannelList.updateChannelList();
         }
         else {
             Utils.print(event.getChannel().getName(), "* " + event.getUser().getNick() + " (" + Utils.getFullUser(event.getUser()) + ") has joined " + event.getChannel().getName());

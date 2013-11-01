@@ -26,11 +26,11 @@ public class Part extends rel.rogue.ircool.CommandExec {
                 for (int i=0; i<args.length; i++) {
                     build += args[i];
                 }
-                user.partChannel(rel.rogue.ircool.Utils.getChan(rel.rogue.ircool.MainGUI.getActiveChannel()), build);
+                user.partChannel(rel.rogue.ircool.Utils.getChan(rel.rogue.ircool.components.ChannelList.getActiveChannel()), build);
             }
         }
         else {
-            user.partChannel(rel.rogue.ircool.Utils.getChan(rel.rogue.ircool.MainGUI.getActiveChannel()));
+            user.partChannel(rel.rogue.ircool.Utils.getChan(rel.rogue.ircool.components.ChannelList.getActiveChannel()));
         }
     }
 
